@@ -1,0 +1,107 @@
+Ülesanne 2 – index.html interaktiivsed testid (detailne juhend + ülesanded)
+
+Eesmärk
+- Õpid lisama index.html lehele:
+  1) uue JS-funktsiooni,
+  2) selle funktsiooni jaoks nähtava testimisnupu ja väljundi,
+  3) ning vastava "mini-testi" (kontroll loogikaga, PASS/FAIL kuvamine).
+
+Eeltingimused
+- Ava fail index.html ja otsi <script> plokki lehe lõpus.
+- Seal on juba olemas näited (nt testUniqueSorted, testFibonacci).
+
+Kuidas lisada uus testitav funktsioon index.html
+1) Lisa funktsioon <script> plokis
+   - Näide:
+```javascript
+function my_new_func(a, b) {
+  // Kirjuta loogika
+  return a + b;
+}
+```
+
+2) Lisa lehe HTML-i (õigesse sektsiooni) nupud ja tulemusekast
+   - Näide (pane B- või C-osa kaardi sisse):
+```html
+<div class="function-test">
+  <h4>my_new_func(2, 3)</h4>
+  <button onclick="testMyNewFunc()">Testi</button>
+  <div id="my-new-func-result" class="result"></div>
+</div>
+```
+
+3) Lisa testifunktsioon <script> plokis
+   - Kasuta olemasolevat utiliiti showResult(elementId, isPass, message)
+   - Näide:
+```javascript
+function testMyNewFunc() {
+  try {
+    const result = my_new_func(2, 3);
+    const expected = 5;
+    const isCorrect = result === expected;
+    showResult(
+      my-new-func-result,
+      isCorrect,
+      `Tulemus: ${result} | Oodatud: ${expected} | ${isCorrect ? PASS : FAIL}`
+    );
+  } catch (error) {
+    showResult(my-new-func-result, false, `VIGA: ${error.message}`);
+  }
+}
+```
+
+4) Lisa täiendavaid kontrolle
+   - Testi erinevaid sisendeid (servajuhtumid, vigased sisendid jne)
+   - Näide:
+```javascript
+// lisa veel võrdlusi
+const moreOk = my_new_func(0, 0) === 0 && my_new_func(-1, 1) === 0;
+const isCorrect = (result === expected) && moreOk;
+```
+
+Hea tava
+- Nime HTML elemendid selgelt: id="<funktsiooni-nimi>-result"
+- Vältida otsest võrdlust ujukomaarvudega – kasuta tolerantsi (nt Math.abs(a-b) < 1e-6)
+- Hoia sõnumid lühikesed: näita tulemust, oodatut ja PASS/FAIL
+
+––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+Ülesanded
+
+A. Lisa 10 esimest a_basics.py funktsiooni index.html lehele
+- Loo igaühe jaoks:
+  1) JS-funktsioon (script plokis) – võib olla lihtne wrapper, mis kutsub Pythoni analoogile vastavat loogikat JavaScriptis; eesmärk on UI testimise harjutus.
+  2) HTML plokk nupu ja tulemusega
+  3) testifunktsioon (showResult abil)
+- Soovitused (vali 10):
+  - abs_val(x): tagasta |x|
+  - max3(a, b, c): tagasta kolmest suurim
+  - repeat(s, n): tagasta sõne s korratud n korda (n>=0)
+  - first_last(s): tagasta {first: esimene_täht, last: viimane_täht} (tühi -> erijuht)
+
+B. Lisa B-osa (b_collections_io.py) jaoks 3 uut funktsiooni index.html lehele
+- Loo igaühe jaoks UI nupp ja testifunktsioon.
+- Soovitused (vali 3):
+  - sum_unique(nums): summa unikaalsetest arvudest
+  - dict_invert(d): väärtus->võti sõnastik (eeldusel, et väärtused on unikaalsed)
+  - take_while(nums, pred): võta algusest, kuni pred on tõene (pred: x>0 vms)
+  - frequencies(nums): tee sageduste sõnastik {väärtus: loendus}
+
+
+Kontrollnimekiri:
+ iga uue elemendi jaoks
+- [ ] JS-funktsioon lisatud <script> plokki
+- [ ] HTML nupp + tulemuse <div> lisatud õigesse sektsiooni
+- [ ] testifunktsioon lisatud ja nupp seob selle onclick atribuudiga
+- [ ] showResult kuvab PASS/FAIL ja mõlemad väärtused (tulemus vs oodatud)
+
+Kuidas kontrollida
+- Ava index.html brauseris
+- Klõpsa "Testi" – näed PASS/FAIL ja detailid
+- Paranda loogikat, kuni said oodatud tulemuse
+
+
+```
+Kasuta:
+```javascript
+const isCorrect = approxEqual(computed, expected);
+```

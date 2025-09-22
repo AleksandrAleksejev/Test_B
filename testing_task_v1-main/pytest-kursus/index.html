@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="et">
+<head>
+  <meta charset="utf-8">
+  <title>Pytest kursus – A/B/C ülesanded</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#0e0f14; --card:#151826; --text:#e7e9f2; --muted:#9aa3b2; --accent:#6aa6ff; --ok:#43d17d; --warn:#ffd166;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#0b0c11,#0e0f14);}
+    header{padding:32px 20px;text-align:center;color:var(--text)}
+    header h1{margin:0 0 6px 0;font-size:28px}
+    header p{margin:0;color:var(--muted)}
+    main{max-width:1100px;margin:20px auto;padding:20px;display:grid;gap:20px;grid-template-columns:1fr}
+    .card{background:var(--card);border:1px solid #23263a; border-radius:16px; padding:18px 20px; color:var(--text); box-shadow:0 10px 30px rgba(0,0,0,.3)}
+    h2,h3{margin:8px 0 10px 0}
+    code,pre{background:#0c0d13;border:1px solid #22253a;color:#dfe3ff;border-radius:10px}
+    pre{padding:12px;overflow:auto}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#101223;border:1px solid #22263b;color:#aeb6c8;font-size:12px}
+    .grid{display:grid;gap:12px}
+    .two{grid-template-columns:1fr 1fr}
+    .ok{color:var(--ok)}
+    .accent{color:var(--accent)}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    ul{margin:8px 0 8px 18px}
+    .kbd{background:#0c0d13;border:1px solid #22253a;border-bottom-width:3px;padding:2px 6px;border-radius:6px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
+    .interactive-demo{margin:15px 0;padding:15px;background:#0c0d13;border-radius:10px;border:1px solid #22253a}
+    .function-test{margin:10px 0;padding:10px;background:#151826;border-radius:8px;border:1px solid #23263a}
+    .function-test h4{margin:0 0 8px 0;color:var(--accent);font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
+    .function-test button{background:var(--accent);color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+    .function-test button:hover{background:#5a9eff}
+    .result{margin-top:8px;padding:8px;border-radius:6px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace;font-size:12px}
+    .result.pass{background:#1a3d2a;color:var(--ok);border:1px solid #2d5a3d}
+    .result.fail{background:#3d2a1a;color:var(--warn);border:1px solid #5a3d2d}
+    .result.info{background:#1a2a3d;color:var(--accent);border:1px solid #2d3d5a}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pytest mini-kursus (A → C)</h1>
+    <p>Kirjuta teste, et leida vigane kood. <span class="pill">Fookus: testide kirjutamine</span></p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Kiirkäivitus</h2>
+      <ul>
+        <li>Vaata funktsioone <span class="kbd">src/</span> failides.</li>
+        <li>Kirjuta teste <span class="kbd">tests/</span> failides.</li>
+        <li>Käivita kõik testid: <code>pytest -q</code></li>
+        <li>Käivita ainult A-osa testid: <code>pytest -q tests/test_a_basics.py</code></li>
+        <li>Käivita üks test nime järgi: <code>pytest -q -k test_add_basic</code></li>
+      </ul>
+      <p class="accent">Mõned funktsioonid on tahtlikult vigased - sinu testid peaksid need leidma!</p>
+    </section>
+
+    <section class="card">
+      <h2>A. Funktsionaalsed alustõed (a_basics.py)</h2>
+      <p>Üldine juhend: vaata funktsioone ja kirjuta teste, et kontrollida nende õigsust. 
+      Mõned funktsioonid võivad olla vigased - sinu testid peaksid need leidma!</p>
+      <h3>Näide testist</h3>
+      <pre><code># Näide (liitmise test)
+def test_add_basic():
+    assert add(2, 3) == 5
+    assert add(0, 0) == 0
+    assert add(-1, 1) == 0
+</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>B. Kogud ja failid (b_collections_io.py)</h2>
+      <p>Üldine juhend: vaata funktsioone, mis töötlevad loendeid ja sõnastikke. Kirjuta teste, 
+      et kontrollida nende õigsust. Mõned funktsioonid võivad olla vigased!</p>
+      
+      <h3>Proovi funktsioone siin:</h3>
+      <div class="interactive-demo">
+        <div class="function-test">
+          <h4>unique_sorted([3,1,2,2,3])</h4>
+          <button onclick="testUniqueSorted()">Testi</button>
+          <div id="unique-sorted-result" class="result"></div>
+        </div>
+        
+        <div class="function-test">
+          <h4>count_words("Tere tere TERE")</h4>
+          <button onclick="testCountWords()">Testi</button>
+          <div id="count-words-result" class="result"></div>
+        </div>
+        
+        <div class="function-test">
+          <h4>merge_dicts({"a":1, "b":2}, {"b":9, "c":3})</h4>
+          <button onclick="testMergeDicts()">Testi</button>
+          <div id="merge-dicts-result" class="result"></div>
+        </div>
+      </div>
+      
+      <h3>Näide testist</h3>
+      <pre><code># Näide (unikaalsete arvude test)
+def test_unique_sorted_basic():
+    assert unique_sorted([3,1,2,2,3]) == [1,2,3]
+    assert unique_sorted([]) == []
+    assert unique_sorted([5,5,5]) == [5]
+</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>C. Moodul + klass + servajuhtumid (c_module.py)</h2>
+      <p>Üldine juhend: vaata klassi ja funktsioone, mis hoiavad invariante (nt saldo ei tohi minna alla nulli). 
+      Kirjuta teste, et kontrollida nende õigsust ja servajuhtumeid.</p>
+      
+      <h3>Proovi funktsioone siin:</h3>
+      <div class="interactive-demo">
+        <div class="function-test">
+          <h4>fibonacci(10)</h4>
+          <button onclick="testFibonacci()">Testi</button>
+          <div id="fibonacci-result" class="result"></div>
+        </div>
+        
+        <div class="function-test">
+          <h4>prime_factors(12)</h4>
+          <button onclick="testPrimeFactors()">Testi</button>
+          <div id="prime-factors-result" class="result"></div>
+        </div>
+        
+        <div class="function-test">
+          <h4>moving_average([1,2,3,4], 2)</h4>
+          <button onclick="testMovingAverage()">Testi</button>
+          <div id="moving-average-result" class="result"></div>
+        </div>
+        
+        <div class="function-test">
+          <h4>BankAccount konto test</h4>
+          <button onclick="testBankAccount()">Testi</button>
+          <div id="bank-account-result" class="result"></div>
+        </div>
+      </div>
+      
+      <h3>Näide testist</h3>
+      <pre><code># Näide (konto test)
+def test_account_withdraw_overdraft():
+    acc = BankAccount("Jaan", 10)
+    with pytest.raises(ValueError):
+        acc.withdraw(11)  # Ei tohi lubada üle võtta
+</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Tulemus</h2>
+      <p>Kui testid kukuvad <span class="warn">FAIL</span>, siis oled leidnud vea funktsioonis! Kui testid lähevad läbi <span class="ok">PASS</span>, 
+      siis funktsioon on õige. Mõned funktsioonid on tahtlikult vigased - sinu ülesanne on need leida testidega.</p>
+    </section>
+  </main>
+
+  <script>
+    // B-OSA FUNKTSIOONID (mõned vigased)
+    
+    function unique_sorted(nums) {
+      return nums.filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => a - b);
+    }
+    
+    function count_words(text) {
+      const words = text.toLowerCase().split(/\s+/);
+      const result = {};
+      for (const word of words) {
+        if (word) {
+          result[word] = (result[word] || 0) + 1;
+        }
+      }
+      return result;
+    }
+    
+    function merge_dicts(d1, d2) {
+      return { ...d1, ...d2 };
+    }
+    
+    // C-OSA FUNKTSIOONID (mõned vigased)
+    
+    function fibonacci(n) {
+      if (n < 0) throw new Error("Negatiivse arvu Fibonacci ei ole defineeritud");
+      if (n === 0) return 0;
+      if (n === 1) return 1;
+      return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+    
+    function prime_factors(n) {
+      if (n < 2) throw new Error("Algtegurid on defineeritud ainult arvude >= 2 jaoks");
+      const factors = [];
+      let d = 2;
+      while (d * d <= n) {
+        while (n % d === 0) {
+          factors.push(d);
+          n /= d;
+        }
+        d++;
+      }
+      if (n > 1) factors.push(n);
+      return factors;
+    }
+    
+    function moving_average(values, window) {
+      if (window <= 0) throw new Error("Aken peab olema positiivne");
+      if (values.length < window) {
+        return [];
+      }
+      const result = [];
+      for (let i = 0; i <= values.length - window; i++) {
+        const avg = values.slice(i, i + window).reduce((a, b) => a + b, 0) / window;
+        result.push(avg);
+      }
+      return result;
+    }
+    
+    // TESTID
+    
+    function showResult(elementId, isPass, message) {
+      const element = document.getElementById(elementId);
+      element.className = `result ${isPass ? 'pass' : 'fail'}`;
+      element.textContent = message;
+    }
+    
+    function testUniqueSorted() {
+      try {
+        const result = unique_sorted([3,1,2,2,3]);
+        const expected = [1,2,3];
+        const isCorrect = JSON.stringify(result) === JSON.stringify(expected);
+        showResult('unique-sorted-result', isCorrect, 
+          `Tulemus: [${result.join(',')}] | Oodatud: [${expected.join(',')}] | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('unique-sorted-result', false, `VIGA: ${error.message}`);
+      }
+    }
+    
+    function testCountWords() {
+      try {
+        const result = count_words("Tere tere TERE");
+        const expected = {"tere": 3};
+        const isCorrect = JSON.stringify(result) === JSON.stringify(expected);
+        showResult('count-words-result', isCorrect, 
+          `Tulemus: ${JSON.stringify(result)} | Oodatud: ${JSON.stringify(expected)} | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('count-words-result', false, `VIGA: ${error.message}`);
+      }
+    }
+    
+    function testMergeDicts() {
+      try {
+        const result = merge_dicts({"a":1, "b":2}, {"b":9, "c":3});
+        const expected = {"a":1, "b":9, "c":3};
+        const isCorrect = JSON.stringify(result) === JSON.stringify(expected);
+        showResult('merge-dicts-result', isCorrect, 
+          `Tulemus: ${JSON.stringify(result)} | Oodatud: ${JSON.stringify(expected)} | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('merge-dicts-result', false, `VIGA: ${error.message}`);
+      }
+    }
+    
+    function testFibonacci() {
+      try {
+        const result = fibonacci(10);
+        const expected = 55;
+        const isCorrect = result === expected;
+        showResult('fibonacci-result', isCorrect, 
+          `Tulemus: ${result} | Oodatud: ${expected} | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('fibonacci-result', false, `VIGA: ${error.message}`);
+      }
+    }
+    
+    function testPrimeFactors() {
+      try {
+        const result = prime_factors(12);
+        const expected = [2,2,3];
+        const isCorrect = JSON.stringify(result) === JSON.stringify(expected);
+        showResult('prime-factors-result', isCorrect, 
+          `Tulemus: [${result.join(',')}] | Oodatud: [${expected.join(',')}] | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('prime-factors-result', false, `VIGA: ${error.message}`);
+      }
+    }
+    
+    function testMovingAverage() {
+      try {
+        const result = moving_average([1,2,3,4], 2);
+        const expected = [1.5, 2.5, 3.5];
+        const isCorrect = JSON.stringify(result) === JSON.stringify(expected);
+        showResult('moving-average-result', isCorrect, 
+          `Tulemus: [${result.join(',')}] | Oodatud: [${expected.join(',')}] | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('moving-average-result', false, `VIGA: ${error.message}`);
+      }
+    }
+    
+    function testBankAccount() {
+      try {
+        // Lihtne konto test
+        const acc = { balance: 10 };
+        const canWithdraw = acc.balance >= 11;
+        const isCorrect = !canWithdraw; // Ei tohi lubada üle võtta
+        showResult('bank-account-result', isCorrect, 
+          `Saldo: ${acc.balance} | Üle võtmine 11: ${canWithdraw ? 'LUBATUD' : 'KEELATUD'} | ${isCorrect ? 'PASS' : 'FAIL'}`);
+      } catch (error) {
+        showResult('bank-account-result', false, `VIGA: ${error.message}`);
+      }
+    }
+  </script>
+</body>
+</html>
