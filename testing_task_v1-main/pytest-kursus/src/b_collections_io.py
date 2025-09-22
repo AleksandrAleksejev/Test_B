@@ -1,67 +1,83 @@
-# B-OSA: kogud ja failid.
-# Ülesanne: kirjuta teste, et leida vigased funktsioonid!
+import pytest
+from src.b_collections_io import (
+    unique_sorted, count_words, merge_dicts, find_max_pair,
+    flatten, read_file, write_file, safe_get, top_n, chunk_list
+)
 
-def unique_sorted(nums):
-    """Tagasta kasvavas järjekorras unikaalsed arvud."""
-    return sorted(set(nums))
 
-def count_words(text):
-    """Tagasta sõnade (split vastavalt whitespace) sageduste sõnastik."""
-    words = text.lower().split()
-    result = {}
-    for word in words:
-        result[word] = result.get(word, 0) + 1
-    return result
+def test_unique_sorted():
+    assert unique_sorted([3, 1, 2, 2, 3]) == [1, 2, 3]
+    assert unique_sorted([]) == []
+    assert unique_sorted([5, 5, 5]) == [5]
 
-def merge_dicts(d1, d2):
-    """Tagasta uus sõnastik, kus d2 väärtused varjutavad d1 omad."""
-    result = d1.copy()
-    result.update(d2)
-    return result
 
-def find_max_pair(nums):
-    """Tagasta (max, näitude_arv); tühja korral ValueError."""
-    if not nums:
-        raise ValueError("Tühja loendi maksimum ei ole defineeritud")
-    max_val = max(nums)
-    count = nums.count(max_val)
-    return (max_val, count)
+def test_count_words_normal():
+    text = "tere tere tulemast koju"
+    assert count_words(text) == {"tere": 2, "tulemast": 1, "koju": 1}
 
-def flatten(nested):
-    """Lamedda [[...],[...]] -> [...] (ainult üks tase)."""
-    result = []
-    for sublist in nested:
-        result.extend(sublist)
-    return result
 
-def read_file(path):
-    """Loe failitekst ja tagasta stringina."""
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
+def test_count_words_with_punctuation():
+    
+    text = "Tere, tere!"
+    out = count_words(text)
+    assert "tere" in out
+    assert "tere," in out or "tere!" in out   
 
-def write_file(path, text):
-    """Kirjuta tekst faili ja tagasta kirjutatud märkide arv."""
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(text)
-    return len(text)
 
-def safe_get(d, key, default=None):
-    """Võta d[key] või tagasta default, kui pole olemas."""
-    return d.get(key, default)
+def test_merge_dicts():
+    d1 = {"a": 1, "b": 2}
+    d2 = {"b": 20, "c": 3}
+    merged = merge_dicts(d1, d2)
+    assert merged == {"a": 1, "b": 20, "c": 3}
+    assert d1 == {"a": 1, "b": 2}  
 
-def top_n(nums, n):
-    """Tagasta suurimad n arvu kahanevas järjekorras; vigase n korral ValueError."""
-    if n <= 0:
-        raise ValueError("n peab olema positiivne")
-    if n > len(nums):
-        raise ValueError("n ei tohi olla suurem kui loendi pikkus")
-    return sorted(nums, reverse=True)[:n]
 
-def chunk_list(lst, size):
-    """Tükelda list võrdseteks tükkideks (viimane võib olla lühem); size>0."""
-    if size <= 0:
-        raise ValueError("Suurus peab olema positiivne")
-    result = []
-    for i in range(0, len(lst), size):
-        result.append(lst[i:i + size])
-    return result
+def test_find_max_pair():
+    assert find_max_pair([1, 3, 2, 3, 3]) == (3, 3)
+    with pytest.raises(ValueError):
+        find_max_pair([])
+
+
+def test_flatten_basic():
+    assert flatten([[1, 2], [3, 4]]) == [1, 2, 3, 4]
+    assert flatten([[], [5]]) == [5]
+
+
+def test_flatten_nested():
+    nested = [[1, [2]], [[3]]]
+    out = flatten(nested)
+    assert out == [1, [2], [3]]  
+
+
+def test_read_and_write_file(tmp_path):
+    p = tmp_path / "file.txt"
+    text = "Tere maailm äöü\n"
+    written = write_file(str(p), text)
+    assert written == len(text)
+    read_back = read_file(str(p))
+    assert read_back == text
+
+
+def test_safe_get():
+    d = {"x": 10}
+    assert safe_get(d, "x") == 10
+    assert safe_get(d, "y") is None
+    assert safe_get(d, "y", 5) == 5
+
+
+def test_top_n():
+    nums = [5, 1, 3, 5]
+    assert top_n(nums, 2) == [5, 5]
+    with pytest.raises(ValueError):
+        top_n(nums, 0)
+    with pytest.raises(ValueError):
+        top_n(nums, 5)
+
+
+def test_chunk_list():
+    lst = [1, 2, 3, 4, 5]
+    assert chunk_list(lst, 2) == [[1, 2], [3, 4], [5]]
+    assert chunk_list(lst, 3) == [[1, 2, 3], [4, 5]]
+    assert chunk_list([], 3) == []
+    with pytest.raises(ValueError):
+        chunk_list(lst, 0)
