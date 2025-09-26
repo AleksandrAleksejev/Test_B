@@ -61,6 +61,59 @@
       <h2>A. Funktsionaalsed alustõed (a_basics.py)</h2>
       <p>Üldine juhend: vaata funktsioone ja kirjuta teste, et kontrollida nende õigsust. 
       Mõned funktsioonid võivad olla vigased - sinu testid peaksid need leidma!</p>
+      <div class="interactive-demo">
+        <div class="function-test">
+          <h4>abs_val(-5)</h4>
+          <button onclick="testAbsVal()">Testi</button>
+          <div id="abs-val-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>max3(2,5,3)</h4>
+          <button onclick="testMax3()">Testi</button>
+          <div id="max3-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>repeat("ha",3)</h4>
+          <button onclick="testRepeat()">Testi</button>
+          <div id="repeat-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>first_last("Tere")</h4>
+          <button onclick="testFirstLast()">Testi</button>
+          <div id="first-last-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>sum2(3,4)</h4>
+          <button onclick="testSum2()">Testi</button>
+          <div id="sum2-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>is_even(4)</h4>
+          <button onclick="testIsEven()">Testi</button>
+          <div id="is-even-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>is_odd(3)</h4>
+          <button onclick="testIsOdd()">Testi</button>
+          <div id="is-odd-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>min2(2,5)</h4>
+          <button onclick="testMin2()">Testi</button>
+          <div id="min2-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>double(7)</h4>
+          <button onclick="testDouble()">Testi</button>
+          <div id="double-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>half(8)</h4>
+          <button onclick="testHalf()">Testi</button>
+          <div id="half-result" class="result"></div>
+        </div>
+      </div>
+      
       <h3>Näide testist</h3>
       <pre><code># Näide (liitmise test)
 def test_add_basic():
@@ -94,6 +147,22 @@ def test_add_basic():
           <button onclick="testMergeDicts()">Testi</button>
           <div id="merge-dicts-result" class="result"></div>
         </div>
+        <div class="function-test">
+          <h4>sum_unique([1,2,2,3])</h4>
+          <button onclick="testSumUnique()">Testi</button>
+          <div id="sum-unique-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>dict_invert({"a":1,"b":2})</h4>
+          <button onclick="testDictInvert()">Testi</button>
+          <div id="dict-invert-result" class="result"></div>
+        </div>
+        <div class="function-test">
+          <h4>take_while([1,2,-1,3], x => x>0)</h4>
+          <button onclick="testTakeWhile()">Testi</button>
+          <div id="take-while-result" class="result"></div>
+        </div>
+        
       </div>
       
       <h3>Näide testist</h3>
@@ -303,6 +372,40 @@ def test_account_withdraw_overdraft():
       } catch (error) {
         showResult('bank-account-result', false, `VIGA: ${error.message}`);
       }
+      // ---------------- A-osa funktsioonid ----------------
+function abs_val(x) { return Math.abs(x); }
+function max3(a,b,c) { return Math.max(a,b,c); }
+function repeat(s,n) { return s.repeat(n); }
+function first_last(s) { return s ? {first:s[0], last:s[s.length-1]} : {first:null,last:null}; }
+function sum2(a,b){ return a+b; }
+function is_even(n){ return n%2===0; }
+function is_odd(n){ return n%2!==0; }
+function min2(a,b){ return Math.min(a,b); }
+function double(n){ return n*2; }
+function half(n){ return n/2; }
+
+// testid
+function testAbsVal() { try{ const r=abs_val(-5); const e=5; showResult('abs-val-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('abs-val-result',false,`VIGA: ${err.message}`);} }
+function testMax3() { try{ const r=max3(2,5,3); const e=5; showResult('max3-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('max3-result',false,`VIGA: ${err.message}`);} }
+function testRepeat() { try{ const r=repeat("ha",3); const e="hahaha"; showResult('repeat-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('repeat-result',false,`VIGA: ${err.message}`);} }
+function testFirstLast() { try{ const r=first_last("Tere"); const e={first:"T",last:"e"}; const ok=r.first===e.first && r.last===e.last; showResult('first-last-result', ok, `Tulemus: ${JSON.stringify(r)} | Oodatud: ${JSON.stringify(e)} | ${ok?'PASS':'FAIL'}`); }catch(err){showResult('first-last-result',false,`VIGA: ${err.message}`);} }
+function testSum2() { try{ const r=sum2(3,4); const e=7; showResult('sum2-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('sum2-result',false,`VIGA: ${err.message}`);} }
+function testIsEven() { try{ const r=is_even(4); showResult('is-even-result', r===true, `Tulemus: ${r} | Oodatud: true | ${r===true?'PASS':'FAIL'}`); }catch(err){showResult('is-even-result',false,`VIGA: ${err.message}`);} }
+function testIsOdd() { try{ const r=is_odd(3); showResult('is-odd-result', r===true, `Tulemus: ${r} | Oodatud: true | ${r===true?'PASS':'FAIL'}`); }catch(err){showResult('is-odd-result',false,`VIGA: ${err.message}`);} }
+function testMin2() { try{ const r=min2(2,5); const e=2; showResult('min2-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('min2-result',false,`VIGA: ${err.message}`);} }
+function testDouble() { try{ const r=double(7); const e=14; showResult('double-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('double-result',false,`VIGA: ${err.message}`);} }
+function testHalf() { try{ const r=half(8); const e=4; showResult('half-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('half-result',false,`VIGA: ${err.message}`);} }
+
+// ---------------- B-osa funktsioonid ----------------
+function sum_unique(nums){ return [...new Set(nums)].reduce((a,b)=>a+b,0); }
+function dict_invert(d){ const r={}; for(const k in d){r[d[k]]=k;} return r; }
+function take_while(nums,pred){ const out=[]; for(const n of nums){ if(!pred(n)) break; out.push(n); } return out; }
+
+// testid
+function testSumUnique(){ try{ const r=sum_unique([1,2,2,3]); const e=6; showResult('sum-unique-result', r===e, `Tulemus: ${r} | Oodatud: ${e} | ${r===e?'PASS':'FAIL'}`); }catch(err){showResult('sum-unique-result',false,`VIGA: ${err.message}`);} }
+function testDictInvert(){ try{ const r=dict_invert({"a":1,"b":2}); const e={"1":"a","2":"b"}; const ok=JSON.stringify(r)===JSON.stringify(e); showResult('dict-invert-result', ok, `Tulemus: ${JSON.stringify(r)} | Oodatud: ${JSON.stringify(e)} | ${ok?'PASS':'FAIL'}`); }catch(err){showResult('dict-invert-result',false,`VIGA: ${err.message}`);} }
+function testTakeWhile(){ try{ const r=take_while([1,2,-1,3],x=>x>0); const e=[1,2]; const ok=JSON.stringify(r)===JSON.stringify(e); showResult('take-while-result', ok, `Tulemus: [${r.join(',')}] | Oodatud: [${e.join(',')}] | ${ok?'PASS':'FAIL'}`); }catch(err){showResult('take-while-result',false,`VIGA: ${err.message}`);} }
+
     }
   </script>
 </body>
