@@ -1,85 +1,122 @@
-# C-OSA: väike moodul klassi ja abifunktsioonidega.
-# Ülesanne: kirjuta teste, et leida vigased funktsioonid!
+import pytest
+from tests.test_c_module import BankAccount, fibonacci, prime_factors, moving_average, normalize_scores
 
-class BankAccount:
-    def __init__(self, owner, balance=0):
-        """owner: sõne, balance: mitte-negatiivne täisarv"""
-        if not owner or not isinstance(owner, str):
-            raise ValueError("Omanik peab olema mittetühi sõne")
-        if balance < 0:
-            raise ValueError("Algne saldo ei tohi olla negatiivne")
-        self._owner = owner
-        self._balance = balance
+# --- Testid BankAccount klassile ---
 
-    def deposit(self, amount):
-        """Lisa positiivne summa saldole."""
-        if amount <= 0:
-            raise ValueError("Deposiit peab olema positiivne")
-        self._balance += amount
+def test_create_account_valid():
+    acc = BankAccount("Alice", 100)
+    assert acc.balance() == 100
 
-    def withdraw(self, amount):
-        """Võta positiivne summa välja; saldo ei tohi miinusesse minna."""
-        if amount <= 0:
-            raise ValueError("Väljamakse peab olema positiivne")
-        if amount > self._balance:
-            raise ValueError("Pole piisavalt raha kontol")
-        self._balance -= amount
+def test_create_account_invalid_owner():
+    with pytest.raises(ValueError):
+        BankAccount("", 50)
+    with pytest.raises(ValueError):
+        BankAccount(123, 50)
 
-    def transfer_to(self, other, amount):
-        """Kanna teisele kontole; valideeri mõlemad pooled ja summa."""
-        if not isinstance(other, BankAccount):
-            raise ValueError("Teine konto peab olema BankAccount objekt")
-        if amount <= 0:
-            raise ValueError("Ülekande summa peab olema positiivne")
-        if amount > self._balance:
-            raise ValueError("Pole piisavalt raha ülekandmiseks")
-        self._balance -= amount
-        other._balance += amount
+def test_create_account_negative_balance():
+    with pytest.raises(ValueError):
+        BankAccount("Bob", -10)
 
-    def balance(self):
-        """Tagasta hetkene saldo (int)."""
-        return self._balance
+def test_deposit_valid():
+    acc = BankAccount("Alice", 0)
+    acc.deposit(50)
+    assert acc.balance() == 50
 
-def fibonacci(n):
-    """Tagasta n-s Fibonacci arv (0->0, 1->1); n>=0."""
-    if n < 0:
-        raise ValueError("Fibonacci arv ei ole defineeritud negatiivsete arvude jaoks")
-    if n == 0:
-        return 0
-    if n == 1:
-        return 1
-    return fibonacci(n - 1) + fibonacci(n - 2)
+def test_deposit_invalid():
+    acc = BankAccount("Alice", 10)
+    with pytest.raises(ValueError):
+        acc.deposit(0)
+    with pytest.raises(ValueError):
+        acc.deposit(-5)
 
-def prime_factors(n):
-    """Tagasta n algtegurid kasvavas järjekorras; n>=2."""
-    if n < 2:
-        raise ValueError("Algtegurid on defineeritud ainult arvude >= 2 jaoks")
-    factors = []
-    d = 2
-    while d * d <= n:
-        while n % d == 0:
-            factors.append(d)
-            n //= d
-        d += 1
-    if n > 1:
-        factors.append(n)
-    return factors
+def test_withdraw_valid():
+    acc = BankAccount("Alice", 100)
+    acc.withdraw(40)
+    assert acc.balance() == 60
 
-def moving_average(values, window):
-    """Liikuv keskmine; window>0; tagasta float-väärtuste list."""
-    if window <= 0:
-        raise ValueError("Aken peab olema positiivne")
-    if len(values) < window:
-        return []
-    result = []
-    for i in range(len(values) - window + 1):
-        avg = sum(values[i:i + window]) / window
-        result.append(avg)
-    return result
+def test_withdraw_invalid():
+    acc = BankAccount("Alice", 20)
+    with pytest.raises(ValueError):
+        acc.withdraw(0)
+    with pytest.raises(ValueError):
+        acc.withdraw(-5)
+    with pytest.raises(ValueError):
+        acc.withdraw(50)  # rohkem kui saldo
 
-def normalize_scores(scores):
-    """Normaliseeri [0..100] -> [0.0..1.0]; väljaspool olevad väärtused ValueError."""
-    for score in scores:
-        if score < 0 or score > 100:
-            raise ValueError("Skoorid peavad olema vahemikus [0, 100]")
-    return [score / 100.0 for score in scores]
+def test_transfer_valid():
+    acc1 = BankAccount("Alice", 100)
+    acc2 = BankAccount("Bob", 50)
+    acc1.transfer_to(acc2, 30)
+    assert acc1.balance() == 70
+    assert acc2.balance() == 80
+
+def test_transfer_invalid():
+    acc1 = BankAccount("Alice", 10)
+    acc2 = BankAccount("Bob", 0)
+    with pytest.raises(ValueError):
+        acc1.transfer_to("not_account", 5)
+    with pytest.raises(ValueError):
+        acc1.transfer_to(acc2, -5)
+    with pytest.raises(ValueError):
+        acc1.transfer_to(acc2, 20)  # liiga palju
+
+# --- Testid fibonacci funktsioonile ---
+
+def test_fibonacci_base_cases():
+    assert fibonacci(0) == 0
+    assert fibonacci(1) == 1
+
+def test_fibonacci_values():
+    assert fibonacci(5) == 5
+    assert fibonacci(6) == 8
+    assert fibonacci(7) == 13
+
+def test_fibonacci_negative():
+    with pytest.raises(ValueError):
+        fibonacci(-1)
+
+# --- Testid prime_factors funktsioonile ---
+
+def test_prime_factors_small():
+    assert prime_factors(2) == [2]
+    assert prime_factors(3) == [3]
+    assert prime_factors(4) == [2, 2]
+    assert prime_factors(12) == [2, 2, 3]
+
+def test_prime_factors_large_prime():
+    assert prime_factors(29) == [29]
+
+def test_prime_factors_invalid():
+    with pytest.raises(ValueError):
+        prime_factors(1)
+    with pytest.raises(ValueError):
+        prime_factors(0)
+
+# --- Testid moving_average funktsioonile ---
+
+def test_moving_average_basic():
+    vals = [1, 2, 3, 4, 5]
+    assert moving_average(vals, 3) == [2.0, 3.0, 4.0]
+
+def test_moving_average_window_equals_len():
+    vals = [10, 20, 30]
+    assert moving_average(vals, 3) == [20.0]
+
+def test_moving_average_large_window():
+    vals = [1, 2]
+    assert moving_average(vals, 3) == []
+
+def test_moving_average_invalid_window():
+    with pytest.raises(ValueError):
+        moving_average([1, 2, 3], 0)
+
+# --- Testid normalize_scores funktsioonile ---
+
+def test_normalize_scores_valid():
+    assert normalize_scores([0, 50, 100]) == [0.0, 0.5, 1.0]
+
+def test_normalize_scores_invalid():
+    with pytest.raises(ValueError):
+        normalize_scores([-1, 50])
+    with pytest.raises(ValueError):
+        normalize_scores([10, 110])
